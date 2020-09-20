@@ -39,7 +39,9 @@ $(function() {
     $messageForm.submit( e => {
         e.preventDefault('enviando datos');
         console.log($messageBox.val());
-        socket.emit('send message', $messageBox.val())
+        socket.emit('send message', $messageBox.val(), data =>{
+            $chat.append(`<p class="error">${data}</p>`)
+        })
         $messageBox.val('');
     })
 
@@ -55,5 +57,18 @@ $(function() {
         $users.html(html);
     })
 
+    socket.on('whisper', data => {
+        $chat.append(`<p class="whisper"><b>${data.nick}: </b>${data.msg}</p>`)
+    })
+
+    socket.on('load old msgs', msgs => {
+        for (let i=0; i<msgs.length; i++){
+            displayMSG(msgs[i])
+        }
+    })
+
+    function displayMSG(data){
+        $chat.append(`<p class="whisper"><b>${data.nick}: </b>${data.msg}</p>`)
+    }
 
 })
